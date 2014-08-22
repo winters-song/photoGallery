@@ -1,0 +1,10 @@
+<a href="<%= aid? '/album/' + aid + '/' + id : '/photo/' + id  %>">
+	<img src="<%=thumb %>" >
+	<div class="thumb-tools">
+		<span class="delete-icon" title="删除"></span>
+		<span class="edit-icon" title="修改"></span>
+	</div>
+	<div class="thumb-bottom">
+		<span><%=width %>x<%=height %></span>
+	</div>
+</a>

@@ -1,0 +1,3 @@
+e:
+cd E:\git\photoGallery
+npm start

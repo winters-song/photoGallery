@@ -1,0 +1,12 @@
+<td>
+	<%= name %>
+</td>
+<td>
+	<input type="checkbox" <%= creatable ? 'checked' : '' %> data-label="creatable">添加
+	<input type="checkbox" <%= editable ? 'checked' : '' %> data-label="editable">修改
+	<input type="checkbox" <%= deletable ? 'checked' : '' %> data-label="deletable">删除
+</td>
+<td>
+	<a type="button" class="btn btn-primary btn-sm edit-btn">修改密码</a>
+	<a type="button" class="btn btn-danger btn-sm destroy-btn">删除</a>
+</td>

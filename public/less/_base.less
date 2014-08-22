@@ -1,0 +1,61 @@
+
+/**
+ * Less Helper parameters and functions
+ */
+
+.transition(@transition) {
+  -webkit-transition: @transition;
+    -moz-transition: @transition;
+     -ms-transition: @transition;
+      -o-transition: @transition;
+         transition: @transition;
+}
+
+.transform (@rotate: 90deg, @scale: 1, @skew: 1deg, @translate: 10px) {
+    -webkit-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    -moz-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    -o-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    -ms-transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+    transform: rotate(@rotate) scale(@scale) skew(@skew) translate(@translate);
+}
+
+.translate ( @x: 10px, @y: 10px ) {
+  -webkit-transform: translate(@x, @y);
+  -moz-transform: translate(@x, @y);
+  -o-transform: translate(@x, @y);
+  -ms-transform: translate(@x, @y);
+  transform: translate(@x, @y);
+}
+
+.opacity (@opacity) {
+  @opacityPercentage: @opacity * 100;
+  opacity: @opacity;
+  -ms-filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opacityPercentage})"; 
+  filter: ~"alpha(opacity = @{opacityPercentage})";
+}
+
+.linearGradient(@stop1:0, @color1:#ccc, @stop2:100%, @color2:#ddd){ 
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(@stop1, @color1), color-stop(@stop2, @color2));
+  background:-moz-linear-gradient(center top, @color1 @stop1, @color2 @stop2);
+  background:-ms-linear-gradient(top, @color1 @stop1, @color2 @stop2);
+  background:-o-linear-gradient(center top, @color1 @stop1, @color2 @stop2);
+  background:linear-gradient(center top, @color1 @stop1, @color2 @stop2); 
+  filter:~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{color1}', endColorstr='@{color2}', GradientType=0)\9"; 
+}
+
+/*** Helper Classes ***/
+.non-select{
+	user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+	cursor: default;
+}
+
+.ellipsis{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: block;
+	white-space: nowrap;
+}

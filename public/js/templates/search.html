@@ -1,0 +1,57 @@
+<div class="subhead">
+  <h2>搜索</h2>
+  <a href="#" class="collapse">&gt;</a>
+</div>
+<form class="form">
+
+  <div class="row">
+
+    <div class="btn-group btn-group-justified" data-toggle="buttons">
+      <label class="btn btn-default active">
+        <input type="radio" name="type" value="photos" checked > 单图
+      </label>
+      <label class="btn btn-default">
+        <input type="radio" name="type" value="albums"> 组图
+      </label>
+    </div>
+  </div> 
+
+  <div class="row">
+    <div class="col-xs-7 left">
+      <input type="text" class="form-control" name="keywords" placeholder="关键字" >
+    </div>
+
+    <div class="col-xs-5 right">
+      <select class="form-control" name="by" >
+        <option value="title">标题</option>
+        <option value="author">用户名</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <label class="col-xs-4 control-label left">作品类型</label>
+    <div class="col-xs-5 right">
+      <select class="form-control" name="category"> </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <label class="col-xs-4 control-label left">年份</label>
+    <div class="col-xs-5 right">
+      <select class="form-control" name="years"> </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <label class="col-xs-4 control-label left">国家</label>
+    <div class="col-xs-5 right">
+      <select class="form-control" name="country"> </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <a type="button" class="btn btn-primary btn-lg btn-block search-btn">搜索</a>
+  </div>
+  
+</form>
