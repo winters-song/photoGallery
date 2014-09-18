@@ -1,10 +1,13 @@
-<a href="<%= aid? '/album/' + aid + '/' + id : '/photo/' + id  %>">
-	<img src="<%=thumb %>" >
-	<div class="thumb-tools">
-		<span class="delete-icon" title="删除"></span>
-		<span class="edit-icon" title="修改"></span>
-	</div>
-	<div class="thumb-bottom">
-		<span><%=width %>x<%=height %></span>
-	</div>
-</a>
+<li class="thumb" >
+	<a href="<%= aid? '/album/' + aid + '/' + _id : '/photo/' + _id  %>">
+		<img src="<%=thumb %>" >
+		<div class="thumb-tools">
+			<span class="delete-icon glyphicon glyphicon-remove" title="Remove"></span>
+			<span class="edit-icon glyphicon glyphicon-pencil" title="Edit"></span>
+		</div>
+		<div class="info">
+			<h4><%=name %></h4>
+			<span><%=width %>x<%=height %></span>
+		</div>
+	</a>
+</li>

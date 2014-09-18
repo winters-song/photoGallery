@@ -1,8 +1,6 @@
 define([
   'jquery',
   'underscore',
-  'backbone',
-  'collections/photos',
   'text!templates/photo/addDialog.html',
   'common',
   "fileupload",
@@ -12,26 +10,46 @@ define([
   'fileupload-image',
   'fileupload-validate'
 ], 
-function($, _, Backbone, photos, photoAddTemplate, Common){
+function($, _, tpl, Common){
+  'use strict';
 
-  var photoAddDialog = Backbone.View.extend({
+  var AddDialog = function(){
+    this.render();
+  };
 
-    template:  _.template( photoAddTemplate ),
+  AddDialog.prototype = {
 
-    events: {
-      'click .submit-btn': 'submit'
-    },
-
-    submitText: '确定',
+    submitText: 'OK',
 
     uploadUrl: '/api/photo',
 
-    initialize: function() {
-      this.render();
+    render: function(){
+      var me = this;
+
+      me.$el = $(tpl);
+
+      $("body").append(me.$el);
+
+      me.$form = $('form', me.$el);
+
+      me.$err = $('.error-info', me.$el);
+
+      me.$submit = $('.submit-btn', me.$el);
+      me.$preview = $('.preview', me.$el);
+      me.$file = $('.fileupload', me.$el);
+      me.$aid = $('[name=aid]', me.$el);
+
+      me.initEvents();
+
+      me.initFileUpload();
+
+      return this;
     },
 
-    submit: function(){
-      var me = this;
+    submit: function(e){
+      e.preventDefault();
+
+      var me = e.data;
 
       var $this = me.$submit,
         data = $this.data();
@@ -39,7 +57,7 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
       if(me.validate(data)){
         $this
           .off('click')
-          .text('中断')
+          .text('Abort')
           .on('click', function () {
             data.abort();
           });
@@ -47,7 +65,6 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
           $this.text(me.submitText);
         });
       }
-      
     },
 
     validate: function(data){
@@ -64,7 +81,7 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
       });
 
       if(!(data.files && data.files.length)){
-        err = '请选择图片！';
+        err = 'You haven\'t select an image！';
       }else{
         res = true;
       }
@@ -72,39 +89,9 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
       me.$err.html(err);
 
       return res;
-
     },
 
-    setAid: function(aid){
-      this.aid = aid;
-      this.$aid.val(aid);
-    },
-
-    render: function(){
-
-      var me = this;
-
-      me.$el = $(this.template());
-
-      $("body").append(me.$el);
-
-      me.$form = $('form', me.$el);
-
-      me.$err = $('.error-info', me.$el);
-
-      me.$submit = $('.submit-btn', me.$el);
-      me.$preview = $('.preview', me.$el);
-      me.$file = $('.fileupload', me.$el);
-      me.$aid = $('[name=aid]', me.$el);
-
-      me.initDialog();
-
-      me.initFileUpload();
-
-      return this;
-    },
-
-    initDialog: function(){
+    initEvents: function(){
       var me = this;
 
       me.$el.on('hidden.bs.modal', function (e) {
@@ -115,6 +102,14 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
       me.$el.on('shown.bs.modal', function (e) {
         Common.disableNiceScroll();
       });
+
+      me.$submit.on('click', me, me.submit);
+    },
+
+    setAid: function(aid){
+      var me = this;
+      me.aid = aid;
+      me.$aid.val(aid);
     },
 
     reset: function(){
@@ -124,7 +119,6 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
       me.$form[0].reset();
       me.$preview.empty();
       me.$err.html('');
-
     },
 
     initFileUpload: function(){
@@ -151,66 +145,56 @@ function($, _, Backbone, photos, photoAddTemplate, Common){
         });
 
       }).on('fileuploadprocessalways', function (e, data) {
-          var index = data.index,
-              file = data.files[index],
-              node = data.context;
-          if (file.preview) {
-            node.prepend(file.preview);
 
-            var $progress = $('<div class="progress"><div class="progress-bar progress-bar-success"></div></div>');
-            node.append($progress);
-            
-          }
-          if (file.error) {
-            alert('上传失败');
-          }
-          if (index + 1 === data.files.length) {
-            me.$submit.text(me.submitText).prop('disabled', !!data.files.error);
-          }
+        var index = data.index,
+            file = data.files[index],
+            node = data.context;
+        if (file.preview) {
+          node.prepend(file.preview);
+
+          var $progress = $('<div class="progress"><div class="progress-bar progress-bar-success"></div></div>');
+          node.append($progress);
+          
+        }
+        if (file.error) {
+          alert('Upload Failed!');
+        }
+        if (index + 1 === data.files.length) {
+          me.$submit.text(me.submitText).prop('disabled', !!data.files.error);
+        }
 
       }).on('fileuploadprogressall', function (e, data) {
 
-          var progress = parseInt(data.loaded / data.total * 100, 10);
-          $('.progress-bar', data.context).css(
-              'width',
-              progress + '%'
-          );
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('.progress-bar', data.context).css(
+            'width',
+            progress + '%'
+        );
 
       }).on('fileuploaddone', function (e, data) {
 
-          if(data.result._id) {
-            console.log('上传成功');
+        if(data.result._id) {
+          me.$el.modal('hide');
 
-            me.$el.modal('hide');
+          $(Common).triggerHandler('prepend', data.result);
 
-            var id = data.result._id;
-            data.result.id = id;
-            data.result._id = null;
-            photos.add(data.result, {
-              silent : true
-            });
-            photos.trigger('prepend', id);
+          var node = data.context;
 
-            var node = data.context;
-
-            $(node).empty();
-            me.$submit.removeData();
-          };
+          $(node).empty();
+          me.$submit.removeData();
+        }else{
+          alert('Upload failed!');
+        }
 
       }).on('fileuploadfail', function (e, data) {
 
-          alert('上传失败 failed');
+        alert('Upload failed!');
 
       }).prop('disabled', !$.support.fileInput)
-          .parent().addClass($.support.fileInput ? undefined : 'disabled');
-    },
-
-    destroy: function(){
-      this.stopListening();
-      this.$el.empty();
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
     }
-  });
+  };
 
-  return photoAddDialog;
+  return AddDialog;
 });
 

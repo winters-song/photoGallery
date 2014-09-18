@@ -1,0 +1,167 @@
+@import "_base.less";
+@import "_global.less";
+
+.colors{
+  0% {background-color: #39f;}
+  15% {background-color: #F246C9;}
+  30% {background-color: #4453F2;}
+  45% {background-color: #44F262;}
+  60% {background-color: #F257D4;}
+  75% {background-color: #EDF255;}
+  90% {background-color: #F20006;}
+  100% {background-color: #39f;}
+}
+
+@-webkit-keyframes colors {
+  .colors
+}
+
+@-moz-keyframes shining {
+	.colors
+}
+
+@-ms-keyframes shining {
+	.colors
+}
+
+@-o-keyframes shining {
+	.colors
+}
+
+@keyframes shining {
+	.colors
+}
+
+body{
+	background: #1e1e1e;
+}
+
+
+#main{
+
+	padding-top: 100px;
+	padding-bottom: 50px;
+	
+	.logo{
+		text-align: center;
+
+		a{
+			color: #fff;
+			font-size: 1.5em;
+		}
+	}
+}
+
+#login-box{
+	
+	max-width: 400px;
+	margin: 40px auto;
+
+	/* Layout with mask */
+	.rain{
+		padding: 10px 12px 12px 10px;
+		box-shadow: 8px 8px 8px #1e1e1e inset, -9px -9px 8px #1e1e1e inset;
+	}
+	/* Artifical "border" to clear border to bypass mask */
+	.border{
+		padding: 1px;
+		border-radius: 7px;
+		position: relative;
+	}
+
+	.border,
+	.rain{
+		background-repeat: repeat-x, repeat-x, repeat-x, repeat-x;
+		background-position:  -0 0, -0 0, -0 0, -0 0;
+		/* Blue-ish Green Fallback for Mozilla */
+		background-image: -moz-linear-gradient(left, #09BA5E 0%, #00C7CE 15%, #3472CF 26%, #00C7CE 48%, #0CCF91 91%, #09BA5E 100%);
+		/* Add "Highlight" Texture to the Animation */
+		background-image: -webkit-gradient(linear, left top, right top, color-stop(1%,rgba(0,0,0,.3)), color-stop(23%,rgba(0,0,0,.1)), color-stop(40%,rgba(255,231,87,.1)), color-stop(61%,rgba(255,231,87,.2)), color-stop(70%,rgba(255,231,87,.1)), color-stop(80%,rgba(0,0,0,.1)), color-stop(100%,rgba(0,0,0,.25)));
+		/* Starting Color */
+		background-color: #39f;
+
+		.animation(colors 20s ease 0 infinite);
+		.transition(background-position 30s linear);
+	}
+
+	.end{
+		background-position:-5400px 0, -4600px 0, -3800px 0, -3000px 0;
+	}
+
+	.form{
+		border-radius: 5px;
+		padding:30px;
+		.linear-gradient(top, #333, #111);
+		// background-color: #252525;
+	}
+
+	.form-control{
+		padding: 10px;
+		height: auto;
+		font-size: 16px;
+		border-color: #666;
+		color: #fff;
+		background-color: #000;
+
+		&[type="text"]{
+			margin-bottom: -1px;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		&[type="password"]{
+			margin-bottom: 30px;
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+		}
+	}
+
+	.error-info{
+		color: #fff;
+	}
+
+	.login-btn{
+		color: #ccc;
+		border-color: #085181;
+		text-shadow: 0 -1px 0 #000;
+		.linear-gradient(top, #444, #222);
+
+		&:hover{
+			border-color: #09f;
+			box-shadow: 0 0 6px 1px  #33A9F7;
+		}
+	}
+
+}
+
+
+#main-footer{
+	position: fixed;
+	bottom: 0;
+	border-top: 1px solid #555;
+	color: #ccc;
+	text-align: center;
+	width: 100%;
+	padding: 20px 0;
+
+	p{
+		margin: 5px 0;
+	}
+
+	a{
+		color: #999;
+		&:hover{
+			text-decoration: underline;
+		}
+	}
+}
+
+
+@media only screen and (max-width: 750px) {
+#main{
+	padding-top: 30px;
+}
+
+#main-footer{
+	position: static;
+}
+}

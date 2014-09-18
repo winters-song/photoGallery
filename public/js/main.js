@@ -78,7 +78,7 @@ require.config({
   },
 
   paths: {
-    jquery: 'libs/jquery/jquery-1.10.2.min',
+    jquery: 'libs/jquery/jquery-1.11.0.min',
     'jquery.ui.widget' : 'libs/jquery/jquery.ui.widget',
     fileupload: 'libs/blueimp/jquery.fileupload',
     'load-image': 'libs/blueimp/load-image',

@@ -8,6 +8,12 @@ define([
 ], 
 function($, _, Backbone, itemTpl, bootbox, Common){
 
+  bootbox.dialog({
+    title: "That html",
+    message: 'asdfasdf'
+  }).show();
+
+
   var PhotoView = Backbone.View.extend({
 
     tagName: 'div',

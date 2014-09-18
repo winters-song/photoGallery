@@ -22,7 +22,7 @@ cofy(gm.prototype.__proto__);
  */
 function *handlePhoto(filePath, thumbPath){
 	try{
-		yield (gm(filePath).gravity("Center").co_thumb)(250, 188, thumbPath, 70);
+		yield (gm(filePath).gravity("Center").co_thumb)(280, 280, thumbPath, 70);
 		var resolution = yield (gm(filePath).co_size)();
 		return resolution;
 	}catch(e){
@@ -84,8 +84,9 @@ function *upload(next) {
 	  		// create a record
 				var result = yield Photos.insert({ 
 					aid: params.aid || '',
-		  		tags: params.tags,
-		  		description: params.description,
+		  		name: params.fields.name,
+		  		tags: params.fields.tags,
+		  		description: params.fields.description,
 		  		upload_time: new Date().getTime(),
 		  		update_time: new Date().getTime(),
 		  		file: '/files/' + filename,
@@ -121,14 +122,88 @@ function *upload(next) {
 
 
 /**
+ * Update Photo
+ */
+function *update(next) {
+
+	var id = this.params.id;
+	var params = this.request.body;
+
+	if(params.files){
+
+		var file = params.files.file;
+
+		// validate format
+		if(imageTypes.test(file.type)){
+
+			try{
+					
+				var filename = path.basename(file.path);
+				var filePath = path.join(__dirname, "../public/files/", filename);
+			  var thumbPath = path.join(__dirname, "../public/files/thumb/", filename);
+
+			  var resolution = yield handlePhoto(filePath, thumbPath);
+
+			  if(resolution){
+
+			  	yield removePhoto(id);
+
+			  	var cfg = {
+			  		name: params.fields.name,
+			  		tags: params.fields.tags,
+			  		description: params.fields.description,
+			  		update_time: new Date().getTime(),
+			  		file: '/files/' + filename,
+			  		file_path: filePath,
+			  		thumb: '/files/thumb/' + filename,
+			  		thumb_path: thumbPath,
+			  		width: resolution.width,
+			  		height: resolution.height
+			  	}
+
+		  		// create a record
+					yield Photos.update({
+						_id: id
+					},{ 
+						$set: cfg
+					});
+
+					this.body = cfg;
+
+			  }else{
+			  	this.body = "error";
+			  }
+				
+			}catch(e){
+				console.log(e);
+				this.body = "error";
+			}
+
+		} else {
+			//remove temp file if the file's format is not allowed
+			try{
+				fs.unlinkSync(file.path);
+			}catch(e){
+				console.log(e);
+			}
+			
+	    this.body = "Invalid file format";  
+		}
+	}else {
+
+		this.body = "Image didn't change"; 
+	}
+}
+
+/**
  * Retrieve record by Id
  */
 function *getById(next){
 
-	var params = this.params;
+	var id = this.params.id;
 
 	try{
-		var photo = yield Photos.findById(params.id);
+		var photo = yield Photos.findById(id);
 		console.log(photo);
 
 		var prev = yield Photos.findOne({
@@ -156,7 +231,42 @@ function *getById(next){
 		console.log(e);
 		this.body = 'ERROR';
 	}
-	
+}
+
+
+/**
+ * Retrieve record by Id
+ */
+function *remove(next){
+
+	var id = this.params.id;
+
+	try{
+		yield removePhoto(id);
+
+		yield Photos.remove({ _id: id});
+
+		this.body = {success: true};
+		
+	}catch(e){
+		console.log(e);
+		this.body = {success: false};
+	}	
+}
+
+/**
+ * Delete photo and it's thumbnail
+ */
+function *removePhoto(id){
+	try{
+		var photo = yield Photos.findById(id);
+		if(photo){
+			fs.unlinkSync(photo.file_path);
+			fs.unlinkSync(photo.thumb_path);
+		}
+	}catch(e){
+		console.log(e);
+	}
 }
 
 
@@ -164,9 +274,15 @@ module.exports = function(app, koaBody) {
 
 	//Query list
 	app.get('/api/photos', koaBody, getList);
-	//Upload Image
+
+	//Upload Photo
 	app.post('/api/photo', koaBody, upload);
-	// One photo and paging info
-	app.get('/api/photos/:id', koaBody, getById);
+
+	// Retrieve Photo 
+	app.get('/api/photo/:id', koaBody, getById);
+	//Update Photo
+	app.put('/api/photo/:id', koaBody, update);
+	//Remove Photo
+	app.del('/api/photo/:id', koaBody, remove);
 
 }

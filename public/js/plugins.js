@@ -21,4 +21,9 @@
     }
 }());
 
+/**
+ * pro
+ * dev
+ */
+window.devMode = 'dev';
 // Place any jQuery/helper plugins in here.

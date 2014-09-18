@@ -1,0 +1,141 @@
+html{
+  overflow: hidden;
+}
+body{
+  overflow: hidden;
+  font-family: "微软雅黑";
+}
+
+*{
+  padding: 0;
+  margin: 0;
+}
+
+.wrap{
+  overflow: hidden;
+  padding-bottom: 30px;
+}
+
+#logo {
+  margin-top: 7%;
+  margin-left: 10%;
+  padding-left: 40px;
+  width: 440px;
+  border-left: 1px dotted #eee;
+}
+
+#logo .title {
+  display: block;
+  font: 400 60px/100px "黑体","Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #353535;
+  width: 100%;
+}
+
+#logo .description {
+  position: relative;
+  top: -5px;
+  font: 100 60px/100px "黑体","Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #cecece;
+  line-height: .75;
+}
+
+
+.main-footer {
+  padding: 20px 0 20px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left:0;
+  right: 0;
+  display: block;
+  font-size: 14px;
+  background: #eee;
+}
+
+.main-footer div{
+  padding: 0 20px;
+}
+
+
+  .main-footer p, .main-footer ul{
+    line-height: 24px;
+    width:100%;
+  }
+
+  .main-footer li{
+    display: inline;
+  }
+
+  .main-footer a {
+    padding: 0 6px;
+    color: #666;
+  }
+
+  .main-footer a:hover{
+    color: #817ccc;
+  }
+
+  .form{
+    width: 200px;
+    position: absolute;
+    left: 50%;
+    margin-left: -100px;
+    top:40%;
+    font-size: 20px;
+  }
+  .form .row {
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 10px;
+  }
+
+  .lt-ie8 .form .form-control{
+    width: 176px;
+    height: 26px;
+    padding-bottom: 0;
+  }
+
+  .login-btn{
+    margin-top: 10px;
+    float: left;
+  }
+
+  .error-info{
+    font-size: 14px;
+    color: #f00;
+  }
+
+
+@media only screen and (max-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+
+#logo {
+  margin: 20px auto;
+  width: 100%;
+  padding: 0;
+  border-left: 1px dotted #eee;
+}
+
+#logo .title {
+  display: block;
+  font-size: 3.6em;
+  text-align: center;
+}
+
+#logo .description {
+  display: block;
+  font-size: 3.6em;
+  text-align: center;
+}
+
+.form {
+  position: static;
+  margin:0 auto;
+}
+
+.main-footer {
+  position: static;
+  font-size: 12px;
+}
+
+}

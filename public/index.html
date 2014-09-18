@@ -11,58 +11,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <link rel="stylesheet" href="/js/libs/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/jquery.fileupload.css">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="js/libs/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home.css">
   
-  <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
-  <!--[if lt IE 8]>
-    <script src="/js/libs/utils/json3.min.js"></script>
+  <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+  <!--[if lte IE 9]>
+    <script src="js/libs/utils/json3.min.js"></script>
+    <script src="js/libs/utils/respond.min.js"></script>
   <![endif]-->
 
-  <script src="/js/libs/utils/respond.min.js"></script>
 </head>
-<body>
-<div id="app">
-  <header id="main-header">
-    <h1 id="site-title">
-      <a href="/" >
-        Photo Gallery <span>V0.1</span>
-      </a>
-    </h1>
-
-    <div id="tbar">
-      <a href="#">你好，<span class="name"></span></a>
-      <span class="separator"></span>
-      <a id="logout" class="logout" href="#" title="退出"></a>
-    </div>
-
-    <div id="main-nav">
-      <ul></ul>
-    </div>
-  </header>
+<body class="home-page">
+  <header id="main-header"></header>
 
   <div id="main">
-    <div id="board"></div>
-    <div id="sub-board"></div>
+    <div class="container">
+      <header>
+        <h1 class="logo">
+          <a href="/" title="home">
+            Photo Gallery
+          </a>
+        </h1>
+      </header>
+      <article>
+        <div id="search-box">
+          <div class="rain">
+            <div class="border">
+              <input class="" type="text" >
+              <a href="/photos" class="search-btn">
+                <i class="icon-search"></i>
+              </a>
+            </div>
+          </div> 
+        </div> 
+
+        <div id="main-nav">
+          <ul>
+            <li>
+              <a href="/photos" class="photo" title="Photo">
+                <span class="glyphicon glyphicon-picture"></span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="folder" title="Folder">
+                <span class="glyphicon glyphicon-folder-open"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
   </div>
 
-  <a id="top-btn" href="#"></a>
-</div>
+  <footer id="main-footer"></footer>
 
-<script src="/js/plugins.js"></script>
-<script data-main="/js/main.js" src="/js/libs/require/require.js"></script>
-<!-- <script  src="/js/libs/require/require.js"></script> -->
-<!-- <script  src="/built/main-built.js"></script> -->
+  <script src="js/plugins.js"></script>
+  <script src="js/libs/require/require.js"></script>
+  <script>
+  if(window.devMode == 'dev'){
+    document.write('<script src="js/home.js"><\/script>');
+  } else{
+    document.write('<script src="built/home.js"><\/script>');
+  }
+  </script>
 
-<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-<script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='//www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-XXXXX-X');ga('send','pageview');
-</script>
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+  <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-XXXXX-X');ga('send','pageview');
+  </script>
 </body>
 </html>
