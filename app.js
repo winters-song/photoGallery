@@ -3,6 +3,7 @@
 var compress = require('koa-compress'),
 		logger = require('koa-logger'),
 		serve = require('koa-static'),
+		staticCache = require('koa-static-cache'),
 		koa = require('koa'),
 		path = require('path'),
 		router = require('koa-router'),
@@ -21,6 +22,10 @@ var app = module.exports = koa();
 app.use(logger());
 
 // Serve static files
+app.use(staticCache(path.join(__dirname, 'public'), {
+  maxAge: 365 * 24 * 60 * 60
+}));
+
 app.use(serve(path.join(__dirname, 'public')));
 
 // Compress
