@@ -182,6 +182,7 @@ function($, _, tpl, Common){
 
           $(node).empty();
           me.$submit.removeData();
+          me.$submit.on('click', me, me.submit);
         }else{
           alert('Upload failed!');
         }

@@ -93,13 +93,14 @@ function($, _, tpl, Common){
               dataType: 'json'
             }).done(function(data){
               if(data && data.success){
-
+                me.$el.modal('hide');
+                $(Common).triggerHandler('update', [me.targetEl, data, true]);
               }else{
-                alert('Edit Failed!');
+                bootbox.alert('Edit Failed!');
               }
               
             }).fail(function(){
-              alert('Edit Failed!');
+              bootbox.alert('Edit Failed!');
             });
             
           }
@@ -208,7 +209,7 @@ function($, _, tpl, Common){
           
         }
         if (file.error) {
-          alert('Edit Failed!');
+          bootbox.alert('Edit Failed!');
         }
         if (index + 1 === data.files.length) {
           me.$submit.text(me.submitText).prop('disabled', !!data.files.error);
@@ -237,12 +238,12 @@ function($, _, tpl, Common){
           $(node).empty();
           me.$submit.removeData();
         } else {
-          alert('Edit failed!');
+          bootbox.alert('Edit failed!');
         }
 
       }).on('fileuploadfail', function (e, data) {
 
-        alert('Edit failed!');
+        bootbox.alert('Edit failed!');
 
       }).prop('disabled', !$.support.fileInput)
         .parent().addClass($.support.fileInput ? undefined : 'disabled');

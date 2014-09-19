@@ -83,6 +83,8 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
     loadPage: function(){
       var me = this;
 
+      this.enableMore();
+
       me.xhr = $.ajax({
         url: Common.listUrl,
         cache: false,
@@ -94,6 +96,10 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
       }).done(function(data){
         me.start += me.limit;
         me.initList(data);
+
+        if(data.length < me.limit){
+          me.disableMore();
+        }
       });
     },
 
