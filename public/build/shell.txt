@@ -1,0 +1,5 @@
+e:
+cd E:\git\photoGallery\public
+node r.js -o build/home.js
+node r.js -o build/photos.js
+
