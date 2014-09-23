@@ -14,11 +14,15 @@ require.config({
     bootbox: {
       deps: ['bootstrap'],
       exports: 'bootbox'
+    },
+    history:{
+      deps: ['jquery']
     }
   },
 
   paths: {
   	jquery: 'libs/jquery/jquery-1.11.0.min',
+    history: 'libs/jquery/jquery.history',
   	ezpz_hint: 'libs/jquery/jquery.ezpz_hint',
   	underscore: 'libs/underscore/underscore-min',
     text: 'libs/require/text',
@@ -40,14 +44,10 @@ require([
 
   'use strict';
 
-	// Common.initLocale();
-
-  $.extend(Common, {
-  });
-
   new HeaderView({
     logo: false,
-    nav: false
+    nav: false,
+    search: false
   });
 
   new FooterView();

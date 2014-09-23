@@ -92,7 +92,7 @@ function($, _, tpl, Common){
               cache: false,
               dataType: 'json'
             }).done(function(data){
-              if(data && data.success){
+              if(data && data._id){
                 me.$el.modal('hide');
                 $(Common).triggerHandler('update', [me.targetEl, data, true]);
               }else{

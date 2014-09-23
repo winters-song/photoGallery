@@ -37,10 +37,15 @@ function *handlePhoto(filePath, thumbPath){
 function *getList(next) {
 
 	var params = this.request.query;
+	console.log(params);
 
 	// Album Id (no aid means the photo is not in an album)
 	var condition = {
-		aid : params.aid || ''
+		aid : params.aid || '',
+		name: { 
+			$regex: params.q,
+			$options: 'i'
+		}
 	};
 
 	var paging = {
@@ -161,12 +166,13 @@ function *update(next) {
 			  		height: resolution.height
 			  	}
 
-		  		// create a record
 					yield Photos.update({
 						_id: id
 					},{ 
 						$set: cfg
 					});
+
+					cfg._id = id;
 
 					this.body = cfg;
 
@@ -191,7 +197,25 @@ function *update(next) {
 		}
 	}else {
 
-		this.body = "Image didn't change"; 
+		try{
+			yield Photos.update({
+				_id: id
+			},{ 
+				$set: {
+					name: params.name,
+		  		tags: params.tags,
+		  		description: params.description,
+		  		update_time: new Date().getTime()
+				}
+			});
+
+			var photo = yield Photos.findById(id);
+  		
+			this.body = photo;
+		}catch(e){
+			console.log(e);
+			this.body = "error";
+		}
 	}
 }
 
@@ -204,7 +228,7 @@ function *getById(next){
 
 	try{
 		var photo = yield Photos.findById(id);
-		console.log(photo);
+		// console.log(photo);
 
 		var prev = yield Photos.findOne({
 			'upload_time': { $gt: photo.upload_time }

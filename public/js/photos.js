@@ -32,11 +32,15 @@ require.config({
     },
     'fileupload-validate': {
       deps: ['fileupload']
+    },
+    history:{
+      deps: ['jquery']
     }
   },
 
   paths: {
   	jquery: 'libs/jquery/jquery-1.11.0.min',
+    history: 'libs/jquery/jquery.history',
   	ezpz_hint: 'libs/jquery/jquery.ezpz_hint',
   	underscore: 'libs/underscore/underscore-min',
     text: 'libs/require/text',
@@ -76,9 +80,17 @@ require([
     deleteUrl: '/api/photo/'
   });
 
-  new HeaderView({
-    nav:'photo'
+  var header = new HeaderView({
+    nav:'photo',
+    hash: ['q']
   });
-  new BoardView();
+  var board = new BoardView();
+
+  $(header).on('hash', function(e, hash){
+    board.loadPage(true, hash);
+  });
+
+  header.initHistory();
+  header.initHash();
 
 });

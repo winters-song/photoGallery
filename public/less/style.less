@@ -29,7 +29,6 @@ body{
 
 #main-header{
 	width: 100%;
-	height: 100px;
 	position: relative;
 	overflow: hidden;
 	.linear-gradient(top, #444, #1e1e1e);
@@ -58,6 +57,7 @@ body{
 
 #main-nav {
 	padding: 15px 30px 20px;
+	float: left;
 	overflow: hidden;
 
 	ul {
@@ -149,13 +149,13 @@ body{
 }
 
 .login{
-	position: absolute;
-	z-index: 20;
-	top:26px;
-	right: 40px;
+	float: right;
+	margin-top:20px;
+	margin-right: 20px;
 
 	a{
 		color: #ddd;
+		line-height: 38px;
 		&:hover{
 			color: #fff;
 		}
@@ -190,6 +190,51 @@ body{
 		}
 	}
 
+}
+
+#search{
+	float: left;
+	position: relative;
+	margin: 30px 20px;
+	
+	width: 25%;
+
+	input{
+		width: 100%;
+		height: 42px;
+		border: 0;
+		border-radius: 7px;
+		padding: 0 42px 0 10px;
+		outline: none;
+		color: #fff;
+		background-color: #111;
+		box-shadow: inset 0 2px 5px #000;
+		font-size: 20px;
+		border-bottom: 1px solid #555;
+	}
+
+	.search-btn{
+		position: absolute;
+		right: 0px;
+		top: 0px;
+		width: 42px;
+		height: 42px;
+		display: block;
+
+		.icon-search{
+			display: block;
+			width: 100%;
+			height: 100%;
+			background: transparent url(../img/search.png) center no-repeat;
+			.opacity(.7);
+		}
+
+		&:hover{
+			.icon-search{
+				.opacity(1);
+			}
+		}
+	}
 }
 /*** End of header ***/
 
@@ -310,6 +355,16 @@ body{
 		.add-button{
 			float: right;
 			margin: 24px 40px 0 24px;
+			color: #ccc;
+			border-color: #085181;
+			text-shadow: 0 -1px 0 #000;
+			.linear-gradient(top, #444, #222);
+			.transition(all 0.1s ease-in-out);
+
+			&:hover{
+				border-color: #09f;
+				box-shadow: 0 0 6px 1px #33A9F7;
+			}
 		}
 	}
 
@@ -330,7 +385,10 @@ body{
 			overflow: hidden;
 			vertical-align: middle;
 			padding: 0;
-			box-shadow: #101010 2px 2px 5px;
+
+			&.highlight{
+				box-shadow: 0 0 15px 4px #fff;
+			}
 
 			img{
 				width: 280px;
@@ -867,26 +925,6 @@ body{
 	}
 }
 
-@media only screen and (min-width: 900px) and (max-width: 1200px ) {
-
-#main-nav ul li{
-	width: 160px;
-}
-
-}
-
-
-@media only screen and (max-width: 899px) {
-	
-#main-nav ul li{
-	width: 120px;
-}
-
-#main-nav ul li a{
-	padding: 10px 0;
-}
-
-}
 
 @media only screen and (max-width: 40em) {
 

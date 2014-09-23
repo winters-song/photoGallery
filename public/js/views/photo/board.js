@@ -16,7 +16,6 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
 
     me.render();
     me.initEvents();
-    me.loadPage();
   };
 
   BoardView.prototype = {
@@ -24,12 +23,15 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
     start: 0,
     limit: 10,
 
+    params: ['q'],
+
     render: function(){
       var me = this;
 
       me.$el = $('#main');
       me.$list = $('.thumbs', me.$el);
       me.$more = $('.more-link', me.$el);
+      me.$upload = $('.add-button', me.$el);
 
       me.$topBtn = $('#top-btn');
       me.$topBtn.affix({
@@ -56,8 +58,14 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
     authorize: function(){
       var me = this;
 
-      me.addDialog = new AddDialog();
-      me.editDialog = new EditDialog();
+      if(Common.username){
+        me.addDialog = new AddDialog();
+        me.editDialog = new EditDialog();
+        me.$upload.show();
+      }else{
+        me.$upload.remove();
+      }
+      
     },
 
     initEvents: function(){
@@ -70,6 +78,8 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
       me.$topBtn.on('click', me.scrollToTop);
 
       $(Common).on('prepend', me, me.prepend);
+
+      $(Common).on('update', me, me.updateItem);
     },
 
     scrollToTop: function(e){
@@ -80,8 +90,33 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
       });
     },
 
-    loadPage: function(){
+    getFilters: function(){
+      return {}
+    },
+
+    setFilters: function(cfg){
       var me = this;
+
+      me.filters = cfg;
+      me.$searchInput.val(cfg.name);
+    },
+
+    loadPage: function(reload, cfg){
+      var me = this;
+
+      if(reload){
+        me.start = 0;
+        me.$list.empty();
+      }
+
+      if(!cfg){
+        cfg = this.getFilters();
+      }
+
+      var params = $.extend(cfg, {
+        start: me.start,
+        limit: me.limit
+      });
 
       this.enableMore();
 
@@ -89,10 +124,7 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
         url: Common.listUrl,
         cache: false,
         dataType: 'json',
-        data: $.param({
-          start: me.start,
-          limit: me.limit
-        })
+        data: params
       }).done(function(data){
         me.start += me.limit;
         me.initList(data);
@@ -103,13 +135,39 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
       });
     },
 
+    updateItem: function(e, el, data, imgChanged){
+      if(imgChanged){
+        el.find('img').attr('src', data.thumb);
+      }
+      var $info = el.find('.info');
+      $('h4', $info).text(data.name);
+      $('span', $info).text( data.width + 'x' + data.height );
+
+      me.highlight(el);
+    },
+
+    highlight: function(el){
+      el.addClass('highlight');
+
+      setTimeout(function(){
+        el.removeClass('highlight');
+      }, 2000);
+    },
+
     getItemEl: function(data){
       var me = this;
       var html = me.tpl(data);
       var $item = $(html);
 
       $item.data('model', data);
-      me.addEvents($item);
+
+      if(!Common.username){
+        $item.find('.edit-icon').remove();
+        $item.find('.delete-icon').remove();
+      }else{
+        me.addEvents($item);
+      }
+      
       return $item;
     },
 
@@ -118,6 +176,8 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
 
       var $item = me.getItemEl(data);
       me.$list.prepend($item);
+
+      me.highlight($item);
     },
 
     initList: function(data){

@@ -3,7 +3,7 @@
 var sendfile = require('koa-sendfile');
 
 // Login
-function *routeLogin(req, res, next){
+function *routeLogin(){
 	if(this.cookies.get('user')){
 		this.redirect('/');
 	}else{
@@ -16,7 +16,7 @@ function *routeLogin(req, res, next){
 
 // SPA - Single Page App routing logic
 
-function *logout(req, res, next){
+function *logout(){
 	this.cookies.set('user', null);
 	this.body = { success: true };
 }
@@ -35,6 +35,13 @@ module.exports = function(app, koaBody) {
 
 	app.get('/photos', koaBody, function *(){
 		var stats = yield* sendfile.call(this, './public/photos.html');
+		if (!this.status) {
+			this.throw(404);
+		}
+	});
+
+	app.get('/photo', koaBody, function *(){
+		var stats = yield* sendfile.call(this, './public/photo.html');
 		if (!this.status) {
 			this.throw(404);
 		}

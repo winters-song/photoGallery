@@ -1,57 +1,66 @@
-define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'bootbox',
-  'common'
-], 
-function($, _, Backbone, bootbox, Common){
 
-  var LoginView = Backbone.View.extend({
+$(function(){
 
-    el: '#tbar',
+  //start gradient light animation
+  var $login = $('#login-box');
+  $('.rain, .border',$login).addClass('end');
 
-    events: {
-      'click #logout' : 'logout'
-    },
+  if(!Modernizr.indexeddb){
+    $(".form-control").ezpz_hint();
+  }
 
-    initialize: function(cfg) {
+  var $form = $('form');
+  var $error = $('.error-info');
+  var $name = $('[name=username]', $form);
+  var $password = $('[name=password]', $form);
 
-      this.setName(cfg.name);
+  function show_error(msg){
+    $error.html(msg).slideDown();
+  }
 
-    },
+  $form.on('submit', function(e){
+    e.preventDefault();
 
-    setName: function(name){
+    var username = $name.val();
+    var password = $password.val();
 
-      this.name = name;
-      $('.name', this.$el).text(name);
+    $error.html('').hide();
 
-      if($('html').hasClass('lt-ie8')){
-        this.$el.css('z-index', 21).prependTo($('#app'));
-      }
+    if(username && password){
 
-    },
+      $.ajax({
+        url: '/api/login',
+        type: 'post',
+        data: $.param({
+          username: username,
+          password: password
+        }),
+        dataType: 'json'
+      }).done(function(data){
 
-    logout: function(e){
+        if(data.success){
 
-      e.preventDefault();
+          var to = '/home';
 
-      bootbox.confirm("确定要退出吗？", function(state){
-        if(!state){
-          return;
+          if(window.sessionStorage){
+            window.location.href = window.sessionStorage.login_from || to;
+          }else{
+            window.location.href = to;
+          }
+
+        }else if( data.error_code == 2){
+          show_error('Your account or password were incorrect.');
+        }else{
+          show_error('Server is busy!');
         }
-        
-        $.ajax({
-          url: Common.logoutUrl,
-          cache: false
-        }).always(function(){
-          window.location.href="/login";
-        });
-      });
-    }
-  
-  });
 
-  return LoginView;
+      }).fail(function(response){
+        show_error('Server is busy!');
+      });
+
+    }else{
+      show_error('You do have to fill this stuff out, you know.');
+    }
+  });
 
 });

@@ -25,5 +25,5 @@
  * pro
  * dev
  */
-window.devMode = 'pro';
+window.devMode = 'dev';
 // Place any jQuery/helper plugins in here.
