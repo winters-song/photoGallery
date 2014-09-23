@@ -109,11 +109,9 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
         me.$list.empty();
       }
 
-      if(!cfg){
-        cfg = this.getFilters();
-      }
-
-      var params = $.extend(cfg, {
+      var params = $.extend({
+        q: ''
+      },cfg, {
         start: me.start,
         limit: me.limit
       });
