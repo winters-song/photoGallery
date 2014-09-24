@@ -59,8 +59,7 @@ require.config({
     'iframe-transport' : 'libs/blueimp/jquery.iframe-transport',
     'fileupload-process' : 'libs/blueimp/jquery.fileupload-process',
     'fileupload-image' : 'libs/blueimp/jquery.fileupload-image',
-    'fileupload-validate' : 'libs/blueimp/jquery.fileupload-validate',
-    nicescroll: "libs/jquery/jquery.nicescroll.min"
+    'fileupload-validate' : 'libs/blueimp/jquery.fileupload-validate'
   }
 });
 

@@ -1,234 +1,102 @@
 define([
   'jquery',
   'underscore',
-  'backbone',
-  'collections/groupItems',
-  'views/preview/groupMenu',
-  'text!templates/preview/board.html',
   'common',
+  'history',
+  'queryString',
   'smoothZoom',
   'fullscreen'
 ], 
-function($, _, Backbone, groupItems, groupMenuView, previewTpl, Common){
+function($, _, Common){
 
-  var PreviewBoard = Backbone.View.extend({
+  'use strict';
 
-    tagName: 'div',
+  var BoardView = function(){
+    var me = this;
 
-    id: 'smoothZoom',
+    me.render();
+    me.initEvents();
 
-    className: 'thumb',
+    me.initHistory();
+    me.initHash();
+  };
 
-    template: _.template( previewTpl ),
+  BoardView.prototype = {
 
-    events: {
-      'click .back-btn': 'close',
-      'click .full-btn': 'onFullscreen',
-      'click .group-btn': 'toggleMenu',
-      'click .prev-btn': 'goPrev',
-      'click .next-btn': 'goNext'
-    },
+    hash: ['pid', 'aid'],
 
     fullscreen: false,
 
-    initialize: function(cfg) {
-
-      var p = cfg.params;
-
-      $.extend(this, {
-        photoId : p.id,
-        // type : p.type,
-        query : p.query,
-        aid: p.aid
-      });
-
-      if(this.aid){
-        this.isGroup  = true;
-      }
-
-      this.render();
-
-    },
-
-    onFullscreen: function(e){
-      e.preventDefault;
-
+    initHistory : function () {
       var me = this;
 
-      if($.support.fullscreen){
+      History.Adapter.bind(window,'statechange',function(){
+        var State = History.getState(); 
+        var page = State.data.page||1;
+        var hash = _.pick(State.data, me.hash);
 
-        this.$photo.fullScreen({
-          callback: function(state){
+        me.loadPage(hash);
+      });
+    },
 
-            me.fullscreen = state;
-
-            if(state){
-              $(".hidable").stop().fadeOut(600);
-              me.$zoomer.z("hideControl");
-
-              if(me.isGroup){
-                me.hideGroup();
-                me.$groupBtn.stop().fadeOut(600);
-              }
-            } else{
-              $(window).resize();
-              $(".hidable").stop().fadeIn(600);
-              me.$zoomer.z("showControl");
-
-              if(me.isGroup){
-                me.$groupBtn.stop().fadeIn(600);
-              }
-            }
-          }
-        });
-      }else{
-
-        var state = this.state;
-        me.fullscreen = state;
-
-        if(!state){
-          $("html").addClass('fullScreen');
-          $(".photo_info").hide();
-
-          $(".hidable").stop().fadeOut(600);
-          me.$zoomer.z("hideControl");
-         
-         
-        } else{
-          $("html").removeClass('fullScreen');
-          $(".photo_info").show();
-
-          $(".hidable").stop().fadeIn(600);
-          me.$zoomer.z("showControl");
-
-        }
-        $(window).resize();
-        this.state = !state;
-      }
+    initHash : function () {
+      var me = this;
+      var hash = window.location.href;
+      var hashData = hash.queryStringToJSON(); 
+      var hash = _.pick(hashData, me.hash);
+      
+      me.loadPage(hash);
     },
 
     render: function() {
 
       var me = this;
 
-      me.$el.html( me.template() );
+      me.$photo = $('.sz-container');
 
-      $('body').append(me.$el);
+      me.$zoomer = $('.zoom_container');
 
-      me.$photo = $('.sz-container', me.$el);
+      me.$prev = $('.prev-btn');
+      me.$next = $('.next-btn');
 
-      me.$zoomer = $('.zoom_container', me.$el);
+      me.$groupBtn = $('.group-btn');
+      me.$groupEl = $('.thumb-box');
 
-      me.$prev = $('.prev-btn', me.$el);
-      me.$next = $('.next-btn', me.$el);
-
-      me.$groupBtn = $('.group-btn', me.$el);
-      me.$groupEl = $('.thumb-box', me.$el);
-
-      me.$title = $('.photo-title', me.$el);
-      me.$author = $('.photo-author', me.$el);
-      me.$country = $('.photo-country', me.$el);
-      me.$shoot_time = $('.photo-shoot_time', me.$el);
-      me.$shoot_site = $('.photo-shoot_site', me.$el);
-      me.$years = $('.photo-years', me.$el);
-      me.$category = $('.photo-category', me.$el);
-      me.$description = $('.photo-description', me.$el);
-
-      me.load();
-
-      if(me.isGroup){
-        me.groupMenu = new groupMenuView();
-        me.initGroup();
-      }
-
-      $("body").on('keydown', me, me.hotkey);
+      me.$title = $('.photo-title');
+      me.$description = $('.photo-description');
 
       return this;
     },
 
-    toggleMenu: function(){
-      this.groupMenu.toggle();
-    },
-
-    initGroup: function(){
+    initEvents: function(){
       var me = this;
 
-      var params = $.param({
-        aid: me.aid
-      });
+      $(document).on('keydown', me, me.hotkey);
+      $(".full-btn").on('click', me, me.onFullscreen);
+      $(".prev-btn").on('click', me, me.goPrev);
+      $(".next-btn").on('click', me, me.goNext);
 
-      groupItems.fetch({
-        data: params,
-        remove:false,
-        context: this,
-        error: function (collection, response, options) {
-          if(response.responseText){
-            alert(response.responseText);
-          }
-        },
-        success: function(collection, response, options){
-          if(response.length){
-            me.$groupBtn.show();
-            me.groupMenu.setLength(response.length);
-            me.groupMenu.setActive(me.photoId);
-          }
-        }
-      });
-
+  //   events: {
+  //     'click .full-btn': 'onFullscreen',
+  //     'click .group-btn': 'toggleMenu',
+  //   },
     },
 
-    hotkey: function(e){
-
-      var _this = e.data;
-      //esc
-      if(e.keyCode == 27){
-        // me.hideGroup();
-        _this.close(e);
-      }
-      //page up
-      else if(e.keyCode == 33){
-        _this.goPrev(e);    
-      }
-      //page down
-      else if(e.keyCode == 34){
-        _this.goNext(e);
-      }
-
-    },
-
-    paging: function(params){
-
+    loadPage: function(hash){
       var me = this;
 
-      me.photoId = params.id;
+      me.params = hash;
 
-      me.load();
-
-      if(me.isGroup){
-        me.groupMenu.setActive(me.photoId);
-      }
-    },
-
-    load: function(id){
-
-      var data = this.query || '';
-
-      if(this.aid){
-        data = $.param({
-          aid: this.aid
-        });
-      }
+      var data = $.param(hash);
 
       $.ajax({
-        url: '/api/photos/' + this.photoId,
+        url: '/api/photo/' + hash.pid,
         type: 'get',
         data: data,
         dataType: 'json',
         context:this
       }).done(function(data){
-        if(data.errorMsg){
-          console.log(data.errorMsg);
-        }else{
+        if(data._id){
           this.setPager(data);
           this.changeImage(data);
         }
@@ -264,7 +132,7 @@ function($, _, Backbone, groupItems, groupMenuView, previewTpl, Common){
     changeImage: function(data){
       var me = this;    
 
-      this.$zoomer.z("destroy").z({
+      me.$zoomer.z("destroy").z({
         background_COLOR: "#222222",
       //  zoom_MIN: 50,
         width: '100%',
@@ -287,68 +155,95 @@ function($, _, Backbone, groupItems, groupMenuView, previewTpl, Common){
 
     },
 
-    close: function(e){
+    hotkey: function(e){
 
-      e.preventDefault();
-
-      if(this.query){
-        var length = Common.pageStack.length;
-        if(length > 1 && Common.pageStack[length - 2].term == 'home'){
-          Backbone.history.navigate('/home', true);
-        }else{
-          Backbone.history.navigate('/photos/'+ this.query, true);
-        }
-        
-      }else if(this.aid){
-        Backbone.history.navigate('/album/' + this.aid, true);
-      }else{
-        Backbone.history.navigate('/photos', true);
+      var me = e.data;
+      //esc
+      if(e.keyCode == 27){
+        // me.hideGroup();
+        // me.close(e);
+      }
+      //page up
+      else if(e.keyCode == 33){
+        me.goPrev(e);    
+      }
+      //page down
+      else if(e.keyCode == 34){
+        me.goNext(e);
       }
 
     },
 
     goPrev: function(e){
       e.preventDefault();
+      var me = e.data;
 
-      if(this.prevId){
-        this.navigate(this.prevId);
+      if(me.prevId){
+        me.navigate(me.prevId);
       }
       
     },
 
     goNext: function(e){
       e.preventDefault();
+      var me = e.data;
       
-      if(this.nextId){
-        this.navigate(this.nextId);
+      if(me.nextId){
+        me.navigate(me.nextId);
       }
     },
 
     navigate: function(id){
+      var me = this;
+      var p = $.extend({
+        q: '',
+        aid: ''
+      },me.params, {
+        pid: id
+      });
 
       if(this.fullscreen && $.support.fullscreen){
-        this.photoId = id;
-        this.load(id);
-
-      }else if(this.aid){
-        Backbone.history.navigate('/album/' + this.aid + '/' + id, true);
-      }else if(this.query){
-        Backbone.history.navigate('/photo/' + id + '/'+ this.query, true);
+        me.loadPage(p);
       }else{
-        Backbone.history.navigate('/photo/' + id, true);
+        History.pushState(p, Common.title, '?pid='+ p.pid||'' + '&aid='+p.aid + '&q='+p.q );
       }
-      
     },
 
+    onFullscreen: function(e){
+      e.preventDefault;
 
-    destroy: function(){
+      var me = e.data;
 
-      $("body").off('keydown', this.hotkey);
+      if($.support.fullscreen){
 
-      this.remove();
+        me.$photo.fullScreen({
+          callback: function(state){
+
+            me.fullscreen = state;
+
+            if(state){
+              $(".hidable").stop().fadeOut(600);
+              me.$zoomer.z("hideControl");
+
+              if(me.isGroup){
+                me.hideGroup();
+                me.$groupBtn.stop().fadeOut(600);
+              }
+            } else{
+              $(window).resize();
+              $(".hidable").stop().fadeIn(600);
+              me.$zoomer.z("showControl");
+
+              if(me.isGroup){
+                me.$groupBtn.stop().fadeIn(600);
+              }
+            }
+          }
+        });
+      }
     }
-  });
+  };
 
-  return PreviewBoard;
+  return BoardView;
 
 });

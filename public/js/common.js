@@ -22,14 +22,6 @@ define(['jquery'], function ($) {
 			setTimeout(function(){
         $('body').getNiceScroll().resize();
       },100);
-		},
-
-		disableNiceScroll: function(){
-			$('body').getNiceScroll()[0].locked = true;
-		},
-
-		enableNiceScroll: function(){
-			$('body').getNiceScroll()[0].locked = false;
 		}
 		
 	};

@@ -41,7 +41,7 @@ module.exports = function(app, koaBody) {
 	});
 
 	app.get('/photo', koaBody, function *(){
-		var stats = yield* sendfile.call(this, './public/photo.html');
+		var stats = yield* sendfile.call(this, './public/preview.html');
 		if (!this.status) {
 			this.throw(404);
 		}

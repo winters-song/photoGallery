@@ -95,12 +95,10 @@ function($, _, tpl, Common){
       var me = this;
 
       me.$el.on('hidden.bs.modal', function (e) {
-        Common.enableNiceScroll();
         me.reset();
       });
 
       me.$el.on('shown.bs.modal', function (e) {
-        Common.disableNiceScroll();
       });
 
       me.$submit.on('click', me, me.submit);

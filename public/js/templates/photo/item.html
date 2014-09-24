@@ -1,5 +1,5 @@
 <li class="thumb" >
-	<a href="photo?pid=<%=_id %><%=aid ? '&aid=' + aid : '' %>">
+	<a href="photo?pid=<%=_id %><%=aid ? '&aid=' + aid : '' %><%=q ? '&q=' + q : '' %>" target="_blank">
 		<img src="<%=thumb %>" >
 		<div class="thumb-tools">
 			<span class="delete-icon glyphicon glyphicon-remove" title="Remove"></span>

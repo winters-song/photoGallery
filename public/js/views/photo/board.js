@@ -4,12 +4,10 @@ define([
   'text!templates/photo/item.html',
   'views/photo/addDialog',
   'views/photo/editDialog',
-  'common',
-  'nicescroll'
+  'common'
 ], 
 function($, _, itemTpl, AddDialog, EditDialog, Common){
   'use strict';
-
 
   var BoardView = function(){
     var me = this;
@@ -38,15 +36,6 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
         offset: {
           top: 180
         }
-      });
-
-      $("body").niceScroll({
-        cursorcolor:"#ccc",
-        cursoropacitymin : 0.3,
-        cursorwidth : 8,
-        scrollspeed : 50,
-        mousescrollstep :80,
-        zindex:100
       });
 
       me.tpl = _.template(itemTpl);
@@ -116,13 +105,15 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
         limit: me.limit
       });
 
-      this.enableMore();
+      me.query = params.q;
+
+      me.enableMore();
 
       me.xhr = $.ajax({
         url: Common.listUrl,
         cache: false,
         dataType: 'json',
-        data: params
+        data: $.param(params)
       }).done(function(data){
         me.start += me.limit;
         me.initList(data);
@@ -154,6 +145,8 @@ function($, _, itemTpl, AddDialog, EditDialog, Common){
 
     getItemEl: function(data){
       var me = this;
+
+      data.q = me.query || '';
       var html = me.tpl(data);
       var $item = $(html);
 
